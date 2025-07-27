@@ -11,16 +11,35 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = () => {
-    router.push("/dashboard");
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.ok) {
+      router.push("/dashboard");
+    } else {
+      alert("Login gagal: periksa email & password");
+    }
+    setLoading(false);
   };
 
   return (
@@ -33,7 +52,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -42,6 +61,8 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-3">
@@ -54,11 +75,17 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="button" className="w-full" onClick={handleLogin}>
-                  Login
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Logging in..." : "Login"}
                 </Button>
               </div>
             </div>
