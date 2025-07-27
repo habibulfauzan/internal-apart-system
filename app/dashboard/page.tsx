@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // pastikan path sesuai
-import { redirect } from "next/navigation";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -19,7 +18,6 @@ import {
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
 
   return (
     <SidebarProvider>
@@ -39,7 +37,7 @@ export default async function Page() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{session.user?.email}</BreadcrumbPage>
+                  <BreadcrumbPage>{session?.user?.email}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
