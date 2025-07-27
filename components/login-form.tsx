@@ -77,7 +77,7 @@ export function LoginForm({
               {/* Error Message using ShadCN Alert */}
               {error && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                  {/* <AlertCircle className="h-4 w-4" /> */}
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
